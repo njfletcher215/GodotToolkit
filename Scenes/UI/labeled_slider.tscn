@@ -1,0 +1,33 @@
+[gd_scene load_steps=3 format=3 uid="uid://romdxhqhlled"]
+
+[ext_resource type="Script" uid="uid://d2a0h8v0hhhjr" path="res://CommonGodot/Scripts/UI/LabeledSlider.cs" id="1_6lbpa"]
+[ext_resource type="Script" uid="uid://dh73elbg7udc8" path="res://CommonGodot/Scripts/UI/SimpleFormatStringLabel.cs" id="2_44fky"]
+
+[node name="Slider" type="HSlider" node_paths=PackedStringArray("currentValue", "tickLabels")]
+offset_right = 600.0
+offset_bottom = 50.0
+min_value = -0.5
+max_value = 1.5
+step = 0.01
+value = 0.5
+scrollable = false
+tick_count = 9
+script = ExtResource("1_6lbpa")
+currentValue = NodePath("Label")
+tickLabels = NodePath("Tick Labels")
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 0
+offset_right = 600.0
+offset_bottom = 36.0
+text = "Value:"
+script = ExtResource("2_44fky")
+formatString = "Value: {currentValue:0.##}"
+
+[node name="Tick Labels" type="HBoxContainer" parent="."]
+layout_mode = 0
+offset_left = -33.333
+offset_top = 35.0
+offset_right = 633.334
+offset_bottom = 75.0
+alignment = 1
