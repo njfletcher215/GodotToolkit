@@ -11,9 +11,7 @@ public partial class EnumDropdown : OptionButton {
     /// <summary>
     /// The name of the enum to use as the options.
     /// </summary>
-    /// <value>The fully qualified assembly name of the enum, ex. "MyNamespace+MyEnum, myassembly"</value>
-    // TODO this docstring is not actually showing up in the editor
-    // (presumably no docstrings are, but this is the first one where it is REALLY important that it does)
+    /// <value>The assembly name of the enum, ex. "MyNamespace+MyEnum, myassembly"</value>
     [Export]
     private string enumTypeName = "";
 

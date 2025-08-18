@@ -4,7 +4,8 @@ using System;
 /// <summary>
 /// A mediator between a slider and its title, current value, and tick labels.
 /// </summary>
-// TODO figure out if I can make this generic between extending HSlider and VSlider
+// TODO figure out if I can make this generic between extending HSlider and VSlider (remember to update the README if I can).
+// TODO I forgot to add the title!
 public partial class LabeledSlider : HSlider {
     /// <summary>
     /// The simple format string label for the current value of the slider.
@@ -22,10 +23,12 @@ public partial class LabeledSlider : HSlider {
 
     /// <inheritdoc />
     public override void _Ready() {
-        this.InitializeTickLabels();
-        this.currentValue.SetValue("currentValue", this.Value);
-        this.ValueChanged += (value) =>
+        if (this.tickLabels != null) this.InitializeTickLabels();
+        if (this.currentValue != null) {
             this.currentValue.SetValue("currentValue", this.Value);
+            this.ValueChanged += (value) =>
+                this.currentValue.SetValue("currentValue", this.Value);
+        }
     }
 
     /// <summary>

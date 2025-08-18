@@ -4,34 +4,32 @@ using System;
 /// <summary>
 /// Preview of a canvas item (and each of its child canvas items), displayed as a texture.
 /// <summary>
-// TODO be sure to move all of the other common things over to CommonGodot
-//      EnumDropdown, LabeledSlider, and SimpleFormatStringLabel can move to common for sure, but possibly a few others???
 [Tool]
 public partial class CanvasItemPreview : TextureRect {
     /// <summary>
     /// Preview the given canvas item.
     /// </summary>
     /// <param name="previewRoot">The canvas item to be previewed.</param>
-    /// <param name="loadTime">The amount of time to wait for the texture to properly load before destroying the previewRoot.</param>
-    public void Preview(CanvasItem previewRoot, double loadTime = 1.0) {
-        CallDeferred(nameof(CaptureAndApplyTexture), previewRoot, loadTime);
+    /// <param name="loadTimeSeconds">The amount of time to wait for the texture to properly load before destroying the previewRoot.</param>
+    public void Preview(CanvasItem previewRoot, double loadTimeSeconds = 1.0) {
+        CallDeferred(nameof(CaptureAndApplyTexture), previewRoot, loadTimeSeconds);
     }
 
     /// <summary>
     /// Preview the given canvas item.
     /// </summary>
     /// <param name="previewRootScene">The scene with the canvas item to be previewed as its root.</param>
-    /// <param name="loadTime">The amount of time to wait for the texture to properly load before destroying the previewRoot.</param>
-    public void Preview(PackedScene previewRootScene, double loadTime = 1.0) {
-        this.Preview(previewRootScene.Instantiate<CanvasItem>(), loadTime);
+    /// <param name="loadTimeSeconds">The amount of time to wait for the texture to properly load before destroying the previewRoot.</param>
+    public void Preview(PackedScene previewRootScene, double loadTimeSeconds = 1.0) {
+        this.Preview(previewRootScene.Instantiate<CanvasItem>(), loadTimeSeconds);
     }
 
     /// <summary>
     /// Generate and apply the preview texture. Must be done during the game loop.
     /// </summary>
     /// <param name="previewRoot">The canvas item to be captured.</param>
-    /// <param name="loadTime">The amount of time to wait for the texture to properly load before destroying the previewRoot.</param>
-    private void CaptureAndApplyTexture(CanvasItem previewRoot, double loadTime) {
+    /// <param name="loadTimeSeconds">The amount of time to wait for the texture to properly load before destroying the previewRoot.</param>
+    private void CaptureAndApplyTexture(CanvasItem previewRoot, double loadTimeSeconds) {
         var viewport = new SubViewport {
             Size = (Godot.Vector2I)this.Size,
             TransparentBg = true,
@@ -57,7 +55,7 @@ public partial class CanvasItemPreview : TextureRect {
 
             // after a short delay (to make sure the texture renders properly),
             // cleanup the previewRoot to prevent slowdown
-            this.DestroyCanvasItem(previewRoot, loadTime);
+            this.DestroyCanvasItem(previewRoot, loadTimeSeconds);
         } else GD.Print($"{previewRoot} has no visible canvas items to display.");
     }
 

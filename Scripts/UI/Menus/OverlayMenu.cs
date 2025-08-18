@@ -21,7 +21,7 @@ public partial class OverlayMenu : Node2D {
     /// By convention, should be in the form "MenuName_ButtonName".
     /// </param>
     /// <param name="close">Whether or not to close the menu after passing the event.</param>
-    public void OnButtonPress(string eventName, bool close) {
+    public void OnEvent(string eventName, bool close) {
         this.overlayMenuHost.OnOverlayMenuEvent(eventName);
         if (close) this.Close();
     }
