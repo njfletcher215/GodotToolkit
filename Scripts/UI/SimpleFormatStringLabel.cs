@@ -78,7 +78,11 @@ public partial class SimpleFormatStringLabel : Label {
     /// <param name="val">The value to be injected.</param>
     public void SetValue(string key, object val = null) {
         this.values[key] = val;
-        if (this.values.Values.All(val => val == null)) this.Text = this.defaultText;
+        if (this.values.Values.All(val => val == null ||
+                (val is IEnumerable<object> enumerable &&
+                 val is not string &&
+                 enumerable.All(enumerableVal => enumerableVal == null))))
+            this.Text = this.defaultText;
         else this.Text = SimpleFormatStringLabel.FormatWith(this.formatString, this.values);
     }
 }
