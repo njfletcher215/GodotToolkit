@@ -1,0 +1,25 @@
+[gd_scene load_steps=3 format=3 uid="uid://romdxhqhlled"]
+
+[ext_resource type="Script" uid="uid://b4eil2q2541mx" path="res://addons/CommonGodotUI/Scripts/UI/HLabeledSlider.cs" id="1_dc3tx"]
+[ext_resource type="Script" uid="uid://dh73elbg7udc8" path="res://addons/CommonGodotUI/Scripts/UI/SimpleFormatStringLabel.cs" id="2_44fky"]
+
+[node name="Slider" type="HSlider" node_paths=PackedStringArray("currentValue")]
+offset_right = 600.0
+offset_bottom = 50.0
+min_value = -0.5
+max_value = 1.5
+step = 0.01
+value = 0.5
+scrollable = false
+tick_count = 9
+script = ExtResource("1_dc3tx")
+currentValue = NodePath("Label")
+labelTicks = true
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 0
+offset_right = 600.0
+offset_bottom = 36.0
+text = "Value:"
+script = ExtResource("2_44fky")
+formatString = "Value: {currentValue:0.##}"
