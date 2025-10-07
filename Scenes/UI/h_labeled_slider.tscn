@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://romdxhqhlled"]
 
-[ext_resource type="Script" uid="uid://b4eil2q2541mx" path="res://addons/CommonGodotUI/Scripts/UI/HLabeledSlider.cs" id="1_dc3tx"]
-[ext_resource type="Script" uid="uid://dh73elbg7udc8" path="res://addons/CommonGodotUI/Scripts/UI/SimpleFormatStringLabel.cs" id="2_44fky"]
+[ext_resource type="Script" uid="uid://b4eil2q2541mx" path="res://addons/GodotToolkit/Scripts/UI/HLabeledSlider.cs" id="1_dc3tx"]
+[ext_resource type="Script" uid="uid://dh73elbg7udc8" path="res://addons/GodotToolkit/Scripts/UI/SimpleFormatStringLabel.cs" id="2_44fky"]
 
 [node name="Slider" type="HSlider" node_paths=PackedStringArray("currentValue")]
 offset_right = 600.0

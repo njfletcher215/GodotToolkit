@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://bpjr5lag0360x"]
 
-[ext_resource type="Script" uid="uid://bnofw64pjb1pf" path="res://addons/CommonGodotUI/Scripts/UI/VLabeledSlider.cs" id="1_gjsri"]
-[ext_resource type="Script" uid="uid://dh73elbg7udc8" path="res://addons/CommonGodotUI/Scripts/UI/SimpleFormatStringLabel.cs" id="2_12utr"]
+[ext_resource type="Script" uid="uid://bnofw64pjb1pf" path="res://addons/GodotToolkit/Scripts/UI/VLabeledSlider.cs" id="1_gjsri"]
+[ext_resource type="Script" uid="uid://dh73elbg7udc8" path="res://addons/GodotToolkit/Scripts/UI/SimpleFormatStringLabel.cs" id="2_12utr"]
 
 [node name="VSlider" type="VSlider" node_paths=PackedStringArray("currentValue")]
 offset_right = 50.0
