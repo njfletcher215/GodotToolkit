@@ -4,7 +4,7 @@ Scenes and scripts of generic elements for Godot projects.
 
 ## Installation
 
-Clone the repo into `res://addons/` (these are simply library files, so you can place them anywhere in your project folder -- but `addons/GodotToolkit` is the recommended location).
+Clone the repo into `res://addons/` (these are simply library files, so you can place them anywhere in your project folder -- but `addons/GodotToolkit` is the recommended location; some scenes may break if a non-default folder name is used).
 ```bash
 # from your project's root directory
 git clone git@github.com:njfletcher215/GodotToolkit.git addons/GodotToolkit/
