@@ -1,6 +1,7 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 /// <summary>
 /// A draggable node.
@@ -15,14 +16,17 @@ public partial class DragGroup : Node2D {
 
     public Vector2 Drag { set { this._dragDelta = value; } }
 
+    public bool IsDragged { get => this.dragHandles.Any(dragHandle => dragHandle.IsDragging); }
+
     public override string[] _GetConfigurationWarnings() {
         this.dragHandles = DragGroup.GetDragHandles(this);
-        foreach (DragHandle dragHandle in dragHandles) dragHandle.DragTarget = this;
         if (this.dragHandles.Count == 0) return [DragGroup.NO_DRAG_HANDLE_WARNING];
         return [];
     }
 
     public override void _Ready() {
+        this.dragHandles = DragGroup.GetDragHandles(this);
+        foreach (DragHandle dragHandle in dragHandles) dragHandle.DragTarget = this;
         this.Drag = Vector2.Zero;
     }
 
