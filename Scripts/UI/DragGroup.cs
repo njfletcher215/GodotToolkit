@@ -10,13 +10,15 @@ using System.Linq;
 public partial class DragGroup : Node2D {
     private const string NO_DRAG_HANDLE_WARNING = "This node has no DragHandle, so it cannot be dragged. Add a DragHandle child to enable this behavior.";
 
+    [Export] private bool enabled = true;
+
     private List<DragHandle> dragHandles;
 
     private Vector2 _dragDelta;
 
     public Vector2 Drag { set { this._dragDelta = value; } }
 
-    public bool IsDragged { get => this.dragHandles.Any(dragHandle => dragHandle.IsDragging); }
+    public bool IsDragged { get => this.enabled && this.dragHandles.Any(dragHandle => dragHandle.IsDragging); }
 
     public override string[] _GetConfigurationWarnings() {
         this.dragHandles = DragGroup.GetDragHandles(this);
@@ -31,8 +33,20 @@ public partial class DragGroup : Node2D {
     }
 
     public override void _Process(double delta) {
-        this.Position += this._dragDelta;
+        if (this.enabled) this.Position += this._dragDelta;
         this.Drag = Vector2.Zero;
+    }
+
+    public void Enable() {
+        this.enabled = true;
+    }
+
+    public void Disable() {
+        this.enabled = false;
+    }
+
+    public void Toggle() {
+        this.enabled = !this.enabled;
     }
 
     /// <summary>
@@ -40,7 +54,7 @@ public partial class DragGroup : Node2D {
     /// Does not search through other DragGroup children, so DragGroups can be nested.
     /// </summary>
     /// <param name="parent">The node from which to find DragHandle children.</param>
-    public static List<DragHandle> GetDragHandles(Node parent) {
+    private static List<DragHandle> GetDragHandles(Node parent) {
         List<DragHandle> dragHandles = new List<DragHandle>();
 
         foreach (Node child in parent.GetChildren()) {
