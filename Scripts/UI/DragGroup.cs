@@ -18,7 +18,7 @@ public partial class DragGroup : Node2D {
 
     public Vector2 Drag { set { this._dragDelta = value; } }
 
-    public bool IsDragged { get => this.enabled && this.dragHandles.Any(dragHandle => dragHandle.IsDragging); }
+    public bool IsBeingDragged { get => this.enabled && this.dragHandles.Any(dragHandle => dragHandle.IsDragging); }
 
     public override string[] _GetConfigurationWarnings() {
         this.dragHandles = DragGroup.GetDragHandles(this);

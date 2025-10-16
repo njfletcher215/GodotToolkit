@@ -1,6 +1,8 @@
 public interface IDraggable {
     DragGroup DragGroup { get; }
 
+    bool IsBeingDragged { get => this.DragGroup.IsBeingDragged; }
+
     void EnableDragging() {
         this.DragGroup.Enable();
     }
