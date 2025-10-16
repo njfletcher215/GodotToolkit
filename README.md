@@ -76,9 +76,6 @@ A generic trading card.
 #### Usage
 See [`Card`](#card). Create SimpleFormatStringLabels for the `titleLabel` (containing the key 'title') and `descriptionLabel` (containing the key 'description'). Create Sprite2Ds for the `artwork` and `template`. The artwork and template textures will be automatically loaded upon setting the `ArtworkPath` and `TemplatePath` properties.
 
-// TODO I just added the stuff for Scripts/Objects/Cards/*
-        I need to go down the list for the rest of the classes and add or update them here
-
 ## Provided Interfaces
 
 ### IDraggable
