@@ -26,6 +26,18 @@ A basic card, with a face and a back. Can be flipped to reveal each side.
 #### Usage
 Attach this script to a Node2D. Set the `face` and `back` Node2Ds, with any components of the "face" set as descendants of `face` and any components of the "back" as descendants of `back`. Typically, either the face node or the back node should then be set to `Visible = false`, depending on which side you wish to show by default.
 
+### DeckArranger/CardArranger
+An arranger for a deck of cards. Automatically arranges the library, hand, and graveyard of a deck in physical space. This includes the cards' 2D coordinates as well as their z indices.
+
+#### Usage
+The DeckArranger script cannot be attached to a node directly, as it is a generic type. Create a closed generic using the same type parameter as the deck you wish to arrange, and attach that to a node. If your deck is simply a `Deck<Card>`, you can use the CardArranger class.
+
+Create two Marker2Ds, one to mark the library position and one to mark the graveyard position. Create one Path2D to mark the hand path, and set the curve (typically, this will be to a straight line or a simple arc).
+
+When you initialize the deck you want to track, set the DeckArranger's `Deck` property to reference it (do NOT set the `Deck` property to a *new* deck -- the deck arranger does not provide any read access to the deck after it is set). Any cards in the deck should be descendants of the deck arranger -- they do not have to be direct children, as long as each child of the deck arranger has at most 1 card child (so you can, for example, wrap the cards in DragGroups and make the DragGroups children of the deck arranger).
+
+The cards in the deck's library will now be moved toward the `libraryMarker`'s position each frame. Same for the deck's graveyard (which will be moved to the `graveyardMarker`'s position) and its hand (which will be spread across the `handPath`'s curve). They will also be ordered on the Z axis. If the cards implement IDraggable, they will not be moved by the deck arranger while they are being dragged (except to bring them to the front of the z axis).
+
 ### DragGroup/DragHandle
 A wrapper which allows itself (and by extension all descendants) to be dragged by any descendant DragHandles, and the handle by which the DragGroup can be dragged (using the mouse).
 
