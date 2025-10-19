@@ -12,23 +12,25 @@ public partial class DragGroup : Node2D {
 
     [Export] private bool enabled = true;
 
-    private List<DragHandle> dragHandles;
+    private List<DragHandle> _dragHandles;
+    protected List<DragHandle> DragHandles {
+        get => this._dragHandles ??= DragGroup.GetDragHandles(this);
+        set => this._dragHandles = value;
+    }
 
     private Vector2 _dragDelta;
 
     public Vector2 Drag { set { this._dragDelta = value; } }
 
-    public bool IsBeingDragged { get => this.enabled && this.dragHandles.Any(dragHandle => dragHandle.IsDragging); }
+    public bool IsBeingDragged { get => this.enabled && this.DragHandles.Any(dragHandle => dragHandle.IsDragging); }
 
     public override string[] _GetConfigurationWarnings() {
-        this.dragHandles = DragGroup.GetDragHandles(this);
-        if (this.dragHandles.Count == 0) return [DragGroup.NO_DRAG_HANDLE_WARNING];
+        if (this.DragHandles.Count == 0) return [DragGroup.NO_DRAG_HANDLE_WARNING];
         return [];
     }
 
     public override void _Ready() {
-        this.dragHandles = DragGroup.GetDragHandles(this);
-        foreach (DragHandle dragHandle in dragHandles) dragHandle.DragTarget = this;
+        foreach (DragHandle dragHandle in this.DragHandles) dragHandle.DragTarget = this;
         this.Drag = Vector2.Zero;
     }
 
