@@ -28,21 +28,23 @@ public partial class FocusRouter : Node2D, IFocusable {
         }
     }
 
+    private bool _routeHoldingFocus = false;
+    private bool _holdFocus = false;
     /// <summary>
     /// Whether the router is holding focus.
     /// Will be set to <c>true</c> while any focused route is holding focus (and <c>false</c> when no route is).
     /// NOTE: this.HoldFocus.Set is a noop -- this is purposeful to prevent external manipulation.
     /// </summary>
-    private bool _holdFocus = false;
-    bool IFocusable.HoldFocus { get => this._holdFocus; set { ; } }
+    bool IFocusable.HoldFocus { get => this._holdFocus || this._routeHoldingFocus; set { this._holdFocus = value; } }
 
+    private bool _routeSoleFocused = false;
+    private bool _soleFocus = false;
     /// <summary>
     /// Whether the router is requesting *sole* focus.
     /// Will be set to <c>true</c> while any focused route is requesting sole focus (and <c>false</c> when no route is).
     /// NOTE: this.SoleFocus.Set is a noop -- this is purposeful to prevent external manipulation.
     /// </summary>
-    private bool _soleFocus = false;
-    bool IFocusable.SoleFocus { get => this._soleFocus; set { ; } }
+    bool IFocusable.SoleFocus { get => this._soleFocus || this._routeSoleFocused; set { this._soleFocus = value; } }
 
     // TODO does this need to do anything? Ill have to play around with nested routers. For now, I never give up focus so its fine
     //      I think how i implemented hold focus and sole focus should make this irrelevant, as long as i remember to make draggables hold focus on click event and release it on release event
@@ -99,7 +101,7 @@ public partial class FocusRouter : Node2D, IFocusable {
 
         // focus the topRoute's endpoint (as long as no route endpoint is requesting sole focus)
         // (again, being mindful of possible side effects)
-        if (!this._soleFocus && topRouteKey != null && !this._routes[topRouteKey].IsFocused) {
+        if (!this._routeSoleFocused && topRouteKey != null && !this._routes[topRouteKey].IsFocused) {
             this._routes[topRouteKey].Focus();
             this._routes[topRouteKey].FocusLocked = true;
         }
@@ -149,10 +151,10 @@ public partial class FocusRouter : Node2D, IFocusable {
     /// <param name="context">The most recently updated focusable (of this's routes).</param>
     private void UpdateHoldFocus(IFocusable context) {
         if (context.IsFocused && context.HoldFocus) {
-            this._holdFocus = true;
+            this._routeHoldingFocus = true;
             this.OnHoldFocusChanged?.Invoke(this);
         } else if (!this._routes.Values.Any(focusable => focusable.IsFocused && focusable.HoldFocus)) {
-            this._holdFocus = false;
+            this._routeHoldingFocus = false;
             this.OnHoldFocusChanged?.Invoke(this);
         }
     }
@@ -165,10 +167,10 @@ public partial class FocusRouter : Node2D, IFocusable {
     /// <param name="context">The most recently updated focusable (of this's routes).</param>
     private void UpdateSoleFocus(IFocusable context) {
         if (context.IsFocused && context.SoleFocus) {
-            this._soleFocus = true;
+            this._routeSoleFocused = true;
             this.OnSoleFocusChanged?.Invoke(this);
         } else if (!this._routes.Values.Any(focusable => focusable.IsFocused && focusable.SoleFocus)) {
-            this._soleFocus = false;
+            this._routeSoleFocused = false;
             this.OnSoleFocusChanged?.Invoke(this);
         }
     }
