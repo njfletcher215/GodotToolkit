@@ -10,7 +10,60 @@ Clone the repo into `res://addons/` (these are simply library files, so you can 
 git clone git@github.com:njfletcher215/GodotToolkit.git addons/GodotToolkit/
 ```
 
-## Provided Classes
+## Draggables
+A collection of classes enabling click-and-drag movement behavior for arbitrary components.
+
+### DragGroup/DragHandle
+A wrapper which allows itself (and by extension all descendants) to be dragged by any descendant DragHandles, and the handle by which the DragGroup can be dragged (using the mouse).
+
+#### Usage
+Wrap any node(s) you wish to make draggable in a DragGroup, and add one or more descendant DragHandles. Clicking and dragging on any of the DragHandles will update the position of the DragGroup (and by extension all descendants).
+
+### IDraggable
+A draggable node, i.e. a node wrapped in a DragGroup. Technically, there is no requirement that the node be *wrapped* in a DragGroup (or even be a node at all), it simply must be able to *reference* a DragGroup.
+
+#### Usage
+Implement the DragGroup property. Typically, this means returning this.GetParent() (assuming the implementer is a node and a direct child of the DragGroup). The implementer can then be cast as an IDraggable to expose the drag control methods (EnableDragging, DisableDragging, and ToggleDragging).
+
+## Focusables
+A collection of classes enabling the passing of "focus" to one or more components.
+
+### AbstractFocusable
+A base implementation of IFocusable. Most implementers of IFocusable should implement it in the same way, but if another base class is required the implementation will have to be copied. See [`AbstractFocusableNode`](#AbstractFocusableNode) and [`AbstractFocusableNode2D`](#AbstractFocusableNode2D) for base implementations that extend Node and Node2D.
+
+### AbstractFocusableNode
+**Inherits**: `Node`
+A base implementation of IFocusable. Most implementers of IFocusable should implement it in the same way, but if a base class beyond Node is required the implementation will have to be copied. See [`AbstractFocusableNode2D`](#AbstractFocusableNode2D) for a base implementation that extends Node2D, or [`AbstractFocusable`](#AbstractFocusable) for a base implementation with no base class.
+
+### AbstractFocusableNode2D
+A base implementation of IFocusable. Most implementers of IFocusable should implement it in the same way, but if a base class beyond Node2D is required the implementation will have to be copied. See [`AbstractFocusableNode`](#AbstractFocusableNode`) for a base implementation that extends Node, or [`AbstractFocusable`](#AbstractFocusable) for a base implementation with no base class.
+
+### FocusableDragGroup
+**Inherits**: [`DragGroup`](#DragGroup/DragHandle)
+A focusable DragGroup.
+
+#### Usage
+See [`DragGroup`](#DragGroup/DragHandle). Additionally, the DragGroup will only be draggable while it is focused. Note that the DragGroup will not be *enabled*/*disabled* when it is focused/unfocused, rather it will only allow itself to be dragged when it is both enabled and focused.
+
+### FocusRoute
+A route for the FocusRouter. Consists of an activator and an endpoint. Note that a FocusRoute is a *Node* route, which means the endpoint is a Node which is expected at runtime to implement IFocusable, since IFocusables cannot be directly serialized.
+
+#### Usage
+It is not expected that routes be directly saved to resource files. Rather, this class allows the FocusRouter to serialize its NodeRoutes while remaining as strongly-typed as possible.
+
+### FocusRouter
+A router that focuses its route endpoints when their respective activators are hovered by the mouse. Note that the FocusRouter is itself an IFocusable, so FocusRouters may be nested.
+
+#### Usage
+Attach this script to a Node2D and add one or more routes. Node routes (routes to a Node which is expected at runtime to implement IFocusable) can be serialized via the `nodeRoutes` property. Routes may also be added at runtime -- non-Node routes *must* be added at runtime.
+
+### IFocusable
+A focusable.
+
+#### Usage
+The effect(s) of being focused are up to the implementer. Typically, focusables will enable/disable input in some way depending on their focused state.
+
+## Additional Provided Classes
 
 ### CanvasItemPreview
 A preview of a canvas item (and each of its child canvas items), displayed as a texture.
@@ -36,13 +89,7 @@ Create two Marker2Ds, one to mark the library position and one to mark the grave
 
 When you initialize the deck you want to track, set the DeckArranger's `Deck` property to reference it (do NOT set the `Deck` property to a *new* deck -- the deck arranger does not provide any read access to the deck after it is set). Any cards in the deck should be descendants of the deck arranger -- they do not have to be direct children, as long as each child of the deck arranger has at most 1 card child (so you can, for example, wrap the cards in DragGroups and make the DragGroups children of the deck arranger).
 
-The cards in the deck's library will now be moved toward the `libraryMarker`'s position each frame. Same for the deck's graveyard (which will be moved to the `graveyardMarker`'s position) and its hand (which will be spread across the `handPath`'s curve). They will also be ordered on the Z axis. If the cards implement IDraggable, they will not be moved by the deck arranger while they are being dragged (except to bring them to the front of the z axis).
-
-### DragGroup/DragHandle
-A wrapper which allows itself (and by extension all descendants) to be dragged by any descendant DragHandles, and the handle by which the DragGroup can be dragged (using the mouse).
-
-#### Usage
-Wrap any node(s) you wish to make draggable in a DragGroup, and add one or more descendant DragHandles. Clicking and dragging on any of the DragHandles will update the position of the DragGroup (and by extension all descendants).
+The cards in the deck's library will now be moved toward the `libraryMarker`'s position each frame. Same for the deck's graveyard (which will be moved to the `graveyardMarker`'s position) and its hand (which will be spread across the `handPath`'s curve). They will also be ordered on the Z axis. If the cards implement IDraggable, they will not be moved by the deck arranger while they are being dragged (they will, however, be brought to the front of the Z axis). If the cards implement IFocusable, they will also be brought to the front of the Z axis while focused.
 
 ### EnumDropdown
 An OptionButton with a specific enum as its options.
@@ -88,15 +135,7 @@ A generic trading card.
 #### Usage
 See [`Card`](#card). Create SimpleFormatStringLabels for the `titleLabel` (containing the key 'title') and `descriptionLabel` (containing the key 'description'). Create Sprite2Ds for the `artwork` and `template`. The artwork and template textures will be automatically loaded upon setting the `ArtworkPath` and `TemplatePath` properties.
 
-## Provided Interfaces
-
-### IDraggable
-A draggable node, i.e. a node wrapped in a DragGroup. Technically, there is no requirement that the node be *wrapped* in a DragGroup (or even be a node at all), it simply must be able to *reference* a DragGroup.
-
-#### Usage
-Implement the DragGroup property. Typically, this means returning this.GetParent() (assuming the implementer is a node and a direct child of the DragGroup). The implementer can then be cast as an IDraggable to expose the drag control methods (EnableDragging, DisableDragging, and ToggleDragging).
-
-## Provided Resources
+## Additional Provided Resources
 
 ### DeckData
 Data for a deck of cards.

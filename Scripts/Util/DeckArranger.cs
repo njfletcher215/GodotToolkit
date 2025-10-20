@@ -3,6 +3,8 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 
+// TODO update documentation for this to reflect how it now handles IFocusable cards as well as IDraggable cards
+
 /// <summary>
 /// An arranger for a Deck of Cards.
 /// Handles moving cards to thier respective locations.
@@ -65,9 +67,9 @@ public partial class DeckArranger<T> : Node where T : Card {
     public override void _Process(double delta) {
         // XXX each of these takes a snapshot of their respective zone
         //     I am very worried that will get expensive fast
-        this.MoveTowardLibrary();
-        this.MoveTowardHand();
-        this.MoveTowardGraveyard();
+        this.ArrangeLibrary();
+        this.ArrangeHand();
+        this.ArrangeGraveyard();
     }
 
     /// <inheritdoc />
@@ -81,6 +83,73 @@ public partial class DeckArranger<T> : Node where T : Card {
         base.AddChild(child, forceReadableName, internalMode);
 
         this.ProcessChild(child);
+    }
+
+    /// <summary>
+    /// Move all cards in the library towards this.libraryMarker.Position.
+    /// </summary>
+    private void ArrangeLibrary() {
+        T[] library = this._deck.LibrarySnapshot.ToArray();
+
+        for (int i = 0; i < library.Length; i++) {
+            if (this.cardRoots.TryGetValue(library[i], out Node2D cardRoot)) {
+                // if the card is being focused or dragged, move it above the rest of the cards
+                if (library[i] is IDraggable draggable && draggable.IsBeingDragged ||
+                    library[i] is IFocusable focusable && focusable.IsFocused)
+                    cardRoot.ZIndex = this.handPathCurvePoints.Length;
+                else {
+                    cardRoot.Position = cardRoot.Position.MoveToward(this.libraryMarker.Position, this.maxStep);
+                    cardRoot.ZAsRelative = true;
+                    cardRoot.ZIndex = -1 * i - 1;  // the top of the stack is the 0th card, -1 to place this below the hand (where ZIndices start at 0 and ascend)
+                }
+            } else if (this.nonDescendantCards.Add(library[i])) GD.PushWarning(string.Format(DeckArranger<T>.CARD_NOT_DESCENDANT_WARNING_TEMPLATE, library[i]));
+        }
+    }
+
+    /// <summary>
+    /// Move all cards in the hand towards their position on this.handPath.Curve.
+    /// </summary>
+    private void ArrangeHand() {
+        T[] hand = this._deck.HandSnapshot.ToArray();
+
+        if (this.handPathCurvePoints == null || this.handPathCurvePoints.Length != hand.Length)
+            this.CalculateHandCurvePoints();
+
+        for (int i = 0; i < hand.Length; i++) {
+            if (this.cardRoots.TryGetValue(hand[i], out Node2D cardRoot)) {
+                // if the card is being dragged, move it above the rest of the cards
+                if (hand[i] is IDraggable draggable && draggable.IsBeingDragged ||
+                    hand[i] is IFocusable focusable && focusable.IsFocused)
+                    cardRoot.ZIndex = this.handPathCurvePoints.Length;
+                else {
+                    cardRoot.Position = cardRoot.Position.MoveToward(this.handPathCurvePoints[i], this.maxStep);
+                    cardRoot.ZAsRelative = true;
+                    cardRoot.ZIndex = i;  // to place cards on the right on top
+                }
+            } else if (this.nonDescendantCards.Add(hand[i])) GD.PushWarning(string.Format(DeckArranger<T>.CARD_NOT_DESCENDANT_WARNING_TEMPLATE, hand[i]));
+        }
+
+    }
+
+    /// <summary>
+    /// Move all cards in the graveyard towards this.graveyardMarker.Position.
+    /// </summary>
+    private void ArrangeGraveyard() {
+        T[] graveyard = this._deck.GraveyardSnapshot.ToArray();
+
+        for (int i = 0; i < graveyard.Length; i++) {
+            if (this.cardRoots.TryGetValue(graveyard[i], out Node2D cardRoot)) {
+                // if the card is being dragged, move it above the rest of the cards
+                if (graveyard[i] is IDraggable draggable && draggable.IsBeingDragged ||
+                    graveyard[i] is IFocusable focusable && focusable.IsFocused)
+                    cardRoot.ZIndex = this.handPathCurvePoints.Length;
+                else {
+                    cardRoot.Position = cardRoot.Position.MoveToward(this.graveyardMarker.Position, this.maxStep);
+                    cardRoot.ZAsRelative = true;
+                    cardRoot.ZIndex = -1 * i - 1;  // the top of the stack is the 0th card, -1 to place this below the hand (where ZIndices start at 0 and ascend)
+                }
+            } else if (this.nonDescendantCards.Add(graveyard[i])) GD.PushWarning(string.Format(DeckArranger<T>.CARD_NOT_DESCENDANT_WARNING_TEMPLATE, graveyard[i]));
+        }
     }
 
     /// <summary>
@@ -109,67 +178,6 @@ public partial class DeckArranger<T> : Node where T : Card {
 
         for (int i = 0; i < this.handPathCurvePoints.Length; i++)
             this.handPathCurvePoints[i] = this.handPath.Position + this.handPath.Curve.SampleBaked((i * spacing) + offset);
-    }
-
-    /// <summary>
-    /// Move all cards in the library towards this.libraryMarker.Position.
-    /// </summary>
-    private void MoveTowardLibrary() {
-        T[] library = this._deck.LibrarySnapshot.ToArray();
-
-        for (int i = 0; i < library.Length; i++) {
-            if (this.cardRoots.TryGetValue(library[i], out Node2D cardRoot)) {
-                // if the card is being dragged, move it above the rest of the cards
-                if (library[i] is IDraggable draggable && draggable.IsBeingDragged) cardRoot.ZIndex = this.handPathCurvePoints.Length;
-                else {
-                    cardRoot.Position = cardRoot.Position.MoveToward(this.libraryMarker.Position, this.maxStep);
-                    cardRoot.ZAsRelative = true;
-                    cardRoot.ZIndex = -1 * i - 1;  // the top of the stack is the 0th card, -1 to place this below the hand (where ZIndices start at 0 and ascend)
-                }
-            } else if (this.nonDescendantCards.Add(library[i])) GD.PushWarning(string.Format(DeckArranger<T>.CARD_NOT_DESCENDANT_WARNING_TEMPLATE, library[i]));
-        }
-    }
-
-    /// <summary>
-    /// Move all cards in the hand towards their position on this.handPath.Curve.
-    /// </summary>
-    private void MoveTowardHand() {
-        T[] hand = this._deck.HandSnapshot.ToArray();
-
-        if (this.handPathCurvePoints == null || this.handPathCurvePoints.Length != hand.Length)
-            this.CalculateHandCurvePoints();
-
-        for (int i = 0; i < hand.Length; i++) {
-            if (this.cardRoots.TryGetValue(hand[i], out Node2D cardRoot)) {
-                // if the card is being dragged, move it above the rest of the cards
-                if (hand[i] is IDraggable draggable && draggable.IsBeingDragged) cardRoot.ZIndex = this.handPathCurvePoints.Length;
-                else {
-                    cardRoot.Position = cardRoot.Position.MoveToward(this.handPathCurvePoints[i], this.maxStep);
-                    cardRoot.ZAsRelative = true;
-                    cardRoot.ZIndex = i;  // to place cards on the right on top
-                }
-            } else if (this.nonDescendantCards.Add(hand[i])) GD.PushWarning(string.Format(DeckArranger<T>.CARD_NOT_DESCENDANT_WARNING_TEMPLATE, hand[i]));
-        }
-
-    }
-
-    /// <summary>
-    /// Move all cards in the graveyard towards this.graveyardMarker.Position.
-    /// </summary>
-    private void MoveTowardGraveyard() {
-        T[] graveyard = this._deck.GraveyardSnapshot.ToArray();
-
-        for (int i = 0; i < graveyard.Length; i++) {
-            if (this.cardRoots.TryGetValue(graveyard[i], out Node2D cardRoot)) {
-                // if the card is being dragged, move it above the rest of the cards
-                if (graveyard[i] is IDraggable draggable && draggable.IsBeingDragged) cardRoot.ZIndex = this.handPathCurvePoints.Length;
-                else {
-                    cardRoot.Position = cardRoot.Position.MoveToward(this.graveyardMarker.Position, this.maxStep);
-                    cardRoot.ZAsRelative = true;
-                    cardRoot.ZIndex = -1 * i - 1;  // the top of the stack is the 0th card, -1 to place this below the hand (where ZIndices start at 0 and ascend)
-                }
-            } else if (this.nonDescendantCards.Add(graveyard[i])) GD.PushWarning(string.Format(DeckArranger<T>.CARD_NOT_DESCENDANT_WARNING_TEMPLATE, graveyard[i]));
-        }
     }
 
     /// <summary>
