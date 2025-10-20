@@ -5,7 +5,7 @@ using System.Collections.Generic;
 /// <summary>
 /// An abstract implementation of IFocusable.
 /// </summary>
-public abstract partial class AbstractFocusableNode : IFocusable {
+public abstract partial class AbstractFocusable : IFocusable {
     public event FocusableStateChangedHandler? OnFocusChanged;
     public event FocusableStateChangedHandler? OnHoldFocusChanged;
     public event FocusableStateChangedHandler? OnSoleFocusChanged;
