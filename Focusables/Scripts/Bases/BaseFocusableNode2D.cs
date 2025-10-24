@@ -3,9 +3,9 @@ using System;
 using System.Collections.Generic;
 
 /// <summary>
-/// An abstract implementation of IFocusable on top of a Node.
+/// A base implementation of IFocusable on top of a Node2D.
 /// </summary>
-public abstract partial class AbstractFocusableNode : Node, IFocusable {
+public partial class BaseFocusableNode2D : Node2D, IFocusable {
     public event FocusableStateChangedHandler? OnFocusChanged;
     public event FocusableStateChangedHandler? OnHoldFocusChanged;
     public event FocusableStateChangedHandler? OnSoleFocusChanged;

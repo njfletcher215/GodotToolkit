@@ -28,15 +28,15 @@ Implement the DragGroup property. Typically, this means returning this.GetParent
 ## Focusables
 A collection of classes enabling the passing of "focus" to one or more components.
 
-### AbstractFocusable
-A base implementation of IFocusable. Most implementers of IFocusable should implement it in the same way, but if another base class is required the implementation will have to be copied. See [`AbstractFocusableNode`](#AbstractFocusableNode) and [`AbstractFocusableNode2D`](#AbstractFocusableNode2D) for base implementations that extend Node and Node2D.
+### BaseFocusable
+A base implementation of IFocusable. Most implementers of IFocusable should implement it in the same way, but if another base class is required the implementation will have to be copied. See [`BaseFocusableNode`](#BaseFocusableNode) and [`BaseFocusableNode2D`](#BaseFocusableNode2D) for base implementations that extend Node and Node2D.
 
-### AbstractFocusableNode
+### BaseFocusableNode
 **Inherits**: `Node`
-A base implementation of IFocusable. Most implementers of IFocusable should implement it in the same way, but if a base class beyond Node is required the implementation will have to be copied. See [`AbstractFocusableNode2D`](#AbstractFocusableNode2D) for a base implementation that extends Node2D, or [`AbstractFocusable`](#AbstractFocusable) for a base implementation with no base class.
+A base implementation of IFocusable. Most implementers of IFocusable should implement it in the same way, but if a base class beyond Node is required the implementation will have to be copied. See [`BaseFocusableNode2D`](#BaseFocusableNode2D) for a base implementation that extends Node2D, or [`BaseFocusable`](#BaseFocusable) for a base implementation with no base class.
 
-### AbstractFocusableNode2D
-A base implementation of IFocusable. Most implementers of IFocusable should implement it in the same way, but if a base class beyond Node2D is required the implementation will have to be copied. See [`AbstractFocusableNode`](#AbstractFocusableNode`) for a base implementation that extends Node, or [`AbstractFocusable`](#AbstractFocusable) for a base implementation with no base class.
+### BaseFocusableNode2D
+A base implementation of IFocusable. Most implementers of IFocusable should implement it in the same way, but if a base class beyond Node2D is required the implementation will have to be copied. See [`BaseFocusableNode`](#BaseFocusableNode`) for a base implementation that extends Node, or [`BaseFocusable`](#BaseFocusable) for a base implementation with no base class.
 
 ### FocusableDragGroup
 **Inherits**: [`DragGroup`](#DragGroup/DragHandle)
