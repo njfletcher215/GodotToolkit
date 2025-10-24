@@ -28,13 +28,13 @@ public partial class DragHandle : Area2D {
     public override void _UnhandledInput(InputEvent @event) {
         // NOTE: drag stop is handled on UnhandledInput, meaning it can occur even if the mouse is *not in the area*
         //       this ensures the motion does not stop if the mouse moves so fast it leaves the area
-        if (@event is InputEventMouseButton mouseEvent && !mouseEvent.Pressed) this._isDragging = false;
+        if (@event is InputEventMouseButton mouseEvent && !mouseEvent.Pressed && mouseEvent.ButtonIndex == MouseButton.Left) this._isDragging = false;
         if (this._isDragging && @event is InputEventMouseMotion motionEvent) this._dragTarget.Drag = motionEvent.Relative;
     }
 
     /// <inheritdoc />
     public override void _InputEvent(Viewport viewport, InputEvent @event, int shapeIdx) {
         // NOTE: drag start is only handled on InputEvent, meaning it only occurs if the mouse is *in the area*
-        if (@event is InputEventMouseButton mouseEvent && mouseEvent.Pressed) this._isDragging = true;
+        if (@event is InputEventMouseButton mouseEvent && mouseEvent.Pressed && mouseEvent.ButtonIndex == MouseButton.Left) this._isDragging = true;
     }
 }
