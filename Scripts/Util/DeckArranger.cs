@@ -3,8 +3,6 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 
-// TODO update documentation for this to reflect how it now handles IFocusable cards as well as IDraggable cards
-
 /// <summary>
 /// An arranger for a Deck of Cards.
 /// Handles moving cards to thier respective locations.
@@ -89,6 +87,8 @@ public partial class DeckArranger<T> : Node where T : Card {
     /// Move all cards in the library towards this.libraryMarker.Position.
     /// </summary>
     private void ArrangeLibrary() {
+        if (this._deck == null) return;
+
         T[] library = this._deck.LibrarySnapshot.ToArray();
 
         for (int i = 0; i < library.Length; i++) {
@@ -110,6 +110,8 @@ public partial class DeckArranger<T> : Node where T : Card {
     /// Move all cards in the hand towards their position on this.handPath.Curve.
     /// </summary>
     private void ArrangeHand() {
+        if (this._deck == null) return;
+
         T[] hand = this._deck.HandSnapshot.ToArray();
 
         if (this.handPathCurvePoints == null || this.handPathCurvePoints.Length != hand.Length)
@@ -135,6 +137,8 @@ public partial class DeckArranger<T> : Node where T : Card {
     /// Move all cards in the graveyard towards this.graveyardMarker.Position.
     /// </summary>
     private void ArrangeGraveyard() {
+        if (this._deck == null) return;
+
         T[] graveyard = this._deck.GraveyardSnapshot.ToArray();
 
         for (int i = 0; i < graveyard.Length; i++) {
