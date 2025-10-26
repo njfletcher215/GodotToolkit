@@ -8,7 +8,7 @@ using System.Text.RegularExpressions;
 /// <summary>
 /// A simple label that displays arbitrary variables injected into a format string.
 /// </summary>
-[Tool]
+[Tool] [GlobalClass]
 public partial class SimpleFormatStringLabel : Label {
     private static readonly Regex formatKeyPattern = new Regex(@"\{(?<key>[^:}]+)(:(?<format>[^}]+))?\}", RegexOptions.Compiled);
 
