@@ -143,6 +143,15 @@ Data for a deck of cards.
 #### Usage
 Add each card you want in the deck to the Card Ids array. If multiple copies of the same card are required, you can include its ID multiple times. There is currently to built-in mechanism to instantiate a card from a card id, that implementation is up to the user.
 
+## Additional Provided Attributes
+
+### SetSelfOnReady
+Mark to set the given property to its own value on Ready.
+
+#### Usage
+Mark the properties you want to self-set with SelfSetOnReady. Add `SetSelfOnReadyService` as an Autoload (Project > Project Settings > Globals > Autoload). Any marked properties will then be self-set when their class enters the scene tree.
+Good for display properties, ex. `[SetSelfOnReady] private int Lives { get => this._lives; set { this._lives = value; this.livesLabel.SetValue("lives", this._lives); } }`.
+
 ## Questions or Issues?
 
 Feel free to open an issue on GitHub if something's not working or not clear.
