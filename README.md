@@ -1,3 +1,5 @@
+![GodotToolkit Logo](logo.svg)
+
 # GodotToolkit
 
 Scenes and scripts of generic elements for Godot projects.
