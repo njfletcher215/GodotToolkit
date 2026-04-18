@@ -1,4 +1,4 @@
-![GodotToolkit Logo](logo.svg)
+![Header image: a face-down hand of playing cards with the Godot logo printed on their backs](header.svg)
 
 # GodotToolkit
 
